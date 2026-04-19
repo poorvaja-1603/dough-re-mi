@@ -657,7 +657,7 @@ img {
   font-weight: 700;
 }
 
-.bestseller-info p {
+.bestseller-card .bestseller-info p {
   color: var(--gold);
   font-weight: 800;
   margin: 0;
