@@ -1,200 +1,152 @@
-// Run: node seed.js
-// Seeds the database with all products shown in the Figma designs
-
-require('dotenv').config();
-const mongoose = require('mongoose');
-const Product = require('./models/Product');
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+require("dotenv").config();
+const Product = require("./models/Product");
+const User = require("./models/User");
 
 const products = [
   // CAKES
   {
-    name: 'Strawberry CheeseCake',
+    name: "Strawberry CheeseCake",
     description:
-      'Creamy, rich cheesecake layered over a buttery biscuit base and topped with sweet, juicy strawberries for the perfect balance of indulgent and fresh.',
+      "Creamy, rich cheesecake layered over a buttery biscuit base and topped with sweet, juicy strawberries for the perfect balance of indulgent and fresh.",
     price: 299,
-    category: 'cakes',
-    image: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800&q=80',
+    category: "cakes",
+    image: "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=400",
     isBestSeller: false,
   },
   {
-    name: 'Biscoff CheeseCake',
+    name: "Biscoff CheeseCake",
     description:
-      'Creamy, velvety cheesecake on a crunchy biscuit base, finished with a generous layer of rich Lotus Biscoff spread and crumbs for an irresistibly caramelized flavor.',
+      "Creamy, velvety cheesecake on a crunchy biscuit base, finished with a generous layer of rich Lotus Biscoff spread and crumbs for an irresistibly caramelized flavor.",
     price: 349,
-    category: 'cakes',
-    image: 'https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=800&q=80',
+    category: "cakes",
+    image: "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=400",
     isBestSeller: false,
   },
   {
-    name: 'Black Forest Cake',
+    name: "Black Forest Cake",
     description:
-      'Moist chocolate sponge layered with fresh whipped cream and juicy cherries, finished with rich chocolate shavings for a classic, indulgent Black Forest experience!',
+      "Moist chocolate sponge layered with fresh whipped cream and juicy cherries, finished with rich chocolate shavings for a classic, indulgent Black Forest experience!",
     price: 399,
-    category: 'cakes',
-    image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&q=80',
+    category: "cakes",
+    image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400",
     isBestSeller: false,
   },
   {
-    name: 'Chocolate Truffle Cake',
+    name: "Chocolate Truffle Cake",
     description:
-      'Decadent, moist chocolate cake layered and coated with smooth, rich chocolate truffle ganache for an intensely indulgent treat!',
+      "Decadent, moist chocolate cake layered and coated with smooth, rich chocolate truffle ganache for an intensely indulgent treat!",
     price: 349,
-    category: 'cakes',
-    image: 'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=800&q=80',
-    isBestSeller: false,
-  },
-  {
-    name: 'Red Velvet Cake',
-    description:
-      'A classic red velvet cake with a velvety texture, subtle cocoa flavor, and a rich cream cheese frosting that melts in your mouth.',
-    price: 399,
-    category: 'cakes',
-    image: 'https://images.unsplash.com/photo-1586788680434-30d324634bf6?w=800&q=80',
-    isBestSeller: true,
-    bestSellerRank: 4,
-  },
-  {
-    name: 'Blueberry Cheesecake',
-    description:
-      'A creamy cheesecake topped with a thick, sweet blueberry compote on a crunchy graham cracker crust.',
-    price: 349,
-    category: 'cakes',
-    image: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=800&q=80',
+    category: "cakes",
+    image: "https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=400",
     isBestSeller: false,
   },
 
   // BAKERY
   {
-    name: 'Baguette',
+    name: "Baguette",
     description:
-      'Classic French baguette with a crisp, golden crust and a light, airy crumb, baked fresh for a rustic yet elegant bite!',
+      "Classic French baguette with a crisp, golden crust and a light, airy crumb, baked fresh for a rustic yet elegant bite!",
     price: 100,
-    category: 'bakery',
-    image: 'https://images.unsplash.com/photo-1549931319-a545dcf3bc7b?w=800&q=80',
+    category: "bakery",
+    image: "https://images.unsplash.com/photo-1549931319-a545dcf3bc7b?w=400",
     isBestSeller: true,
     bestSellerRank: 1,
   },
   {
-    name: 'ChocoChip Muffin',
+    name: "ChocoChip Muffin",
     description:
-      'Soft, fluffy muffin loaded with rich, melty chocolate chips and baked to golden perfection for a warm, indulgent bite every time!',
+      "Soft, fluffy muffin loaded with rich, melty chocolate chips and baked to golden perfection for a warm, indulgent bite every time!",
     price: 100,
-    category: 'bakery',
-    image: 'https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=800&q=80',
+    category: "bakery",
+    image: "https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=400",
     isBestSeller: false,
   },
   {
-    name: 'Pretzel',
+    name: "Pretzel",
     description:
-      'Golden-baked pretzel with a soft, chewy center and a lightly crisp, salted crust — the perfect balance of warmth, flavor, and comfort!',
+      "Golden-baked pretzel with a soft, chewy center and a lightly crisp, salted crust — the perfect balance of warmth, flavor, and comfort!",
     price: 120,
-    category: 'bakery',
-    image: 'https://images.unsplash.com/photo-1586040140378-b5fc2eda2d87?w=800&q=80',
+    category: "bakery",
+    image: "https://images.unsplash.com/photo-1586040140378-b5fc2eda2d87?w=400",
     isBestSeller: false,
   },
   {
-    name: 'Croissant',
+    name: "Croissant",
     description:
-      'Buttery, flaky croissant baked to golden perfection, featuring delicate layers and a light, airy center that melts with every bite!',
+      "Buttery, flaky croissant baked to golden perfection, featuring delicate layers and a light, airy center that melts with every bite!",
     price: 199,
-    category: 'bakery',
-    image: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=800&q=80',
+    category: "bakery",
+    image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400",
     isBestSeller: true,
     bestSellerRank: 3,
-  },
-  {
-    name: 'Garlic Bread',
-    description:
-      'Freshly baked artisan bread infused with roasted garlic, herbs, and melted butter for a savory, aromatic delight.',
-    price: 150,
-    category: 'bakery',
-    image: 'https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?w=800&q=80',
-    isBestSeller: false,
-  },
-  {
-    name: 'Blueberry Muffin',
-    description:
-      'Bursting with fresh, juicy blueberries and topped with a light sugar crumble for a sweet, fruity breakfast treat.',
-    price: 120,
-    category: 'bakery',
-    image: 'https://images.unsplash.com/photo-1558303420-f814d8a590f5?w=800&q=80',
-    isBestSeller: false,
   },
 
   // COOKIES
   {
-    name: 'ChocolateChip Cookie',
+    name: "ChocolateChip Cookie",
     description:
-      'Golden-baked cookie loaded with rich, melty chocolate chips, featuring crisp edges and a soft, gooey center for the ultimate indulgent bite.',
+      "Golden-baked cookie loaded with rich, melty chocolate chips, featuring crisp edges and a soft, gooey center for the ultimate indulgent bite.",
     price: 99,
-    category: 'cookies',
-    image: 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=800&q=80',
+    category: "cookies",
+    image: "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=400",
     isBestSeller: false,
   },
   {
-    name: 'OatMeal Raisin Cookie',
+    name: "OatMeal Raisin Cookie",
     description:
-      'Hearty oatmeal cookie studded with sweet, juicy raisins, baked to a warm golden finish with a soft, chewy texture and comforting homemade flavor.',
+      "Hearty oatmeal cookie studded with sweet, juicy raisins, baked to a warm golden finish with a soft, chewy texture and comforting homemade flavor.",
     price: 99,
-    category: 'cookies',
-    image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=800&q=80',
+    category: "cookies",
+    image: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=400",
     isBestSeller: true,
     bestSellerRank: 2,
   },
   {
-    name: 'Peanut Butter Cookie',
+    name: "Peanut Butter Cookie",
     description:
-      'Rich, nutty peanut butter cookie with a soft, tender center and lightly crisp exterior, delivering a perfectly balanced sweet and savory indulgence.',
+      "Rich, nutty peanut butter cookie with a soft, tender center and lightly crisp exterior, delivering a perfectly balanced sweet and savory indulgence.",
     price: 99,
-    category: 'cookies',
-    image: 'https://images.unsplash.com/photo-1590080876034-1f6fac70e09d?w=800&q=80',
+    category: "cookies",
+    image: "https://images.unsplash.com/photo-1590080876034-1f6fac70e09d?w=400",
     isBestSeller: false,
   },
   {
-    name: 'Sugar Cookies',
+    name: "Sugar Cookies",
     description:
-      'Classic buttery sugar cookie with a delicate crumb and lightly crisp edges, offering a simple, sweet elegance that melts in every bite.',
+      "Classic buttery sugar cookie with a delicate crumb and lightly crisp edges, offering a simple, sweet elegance that melts in every bite.",
     price: 99,
-    category: 'cookies',
-    image: 'https://images.unsplash.com/photo-1612201803767-ffe2d9e68bde?w=800&q=80',
+    category: "cookies",
+    image: "https://images.unsplash.com/photo-1612201803767-ffe2d9e68bde?w=400",
     isBestSeller: false,
   },
-  {
-    name: 'Double Chocolate Cookie',
-    description:
-      'A chocolate lover’s dream: rich cocoa dough packed with semi-sweet chocolate chunks for a double dose of decadence.',
-    price: 110,
-    category: 'cookies',
-    image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=800&q=80',
-    isBestSeller: false,
-  },
-  {
-    name: 'Macarons Box (6pcs)',
-    description:
-      'A colorful assortment of delicate French macarons with assorted fillings: vanilla, pistachio, raspberry, and lemon.',
-    price: 450,
-    category: 'cookies',
-    image: 'https://images.unsplash.com/photo-1569864358642-9d161970296d?w=800&q=80',
-    isBestSeller: false,
-  },
-  {
-    name: 'Chocolate Brownie',
-    description:
-      'Fudgy, dense, and intensely chocolatey brownie with a crackly top and a gooey center.',
-    price: 150,
-    category: 'bakery',
-    image: 'https://images.unsplash.com/photo-1606312619070-d48b4c6c23c2?w=800&q=80',
-    isBestSeller: true,
-    bestSellerRank: 5,
-  },
-
 ];
 
 async function seed() {
   await mongoose.connect(process.env.MONGO_URI);
+
+  // Seed products
   await Product.deleteMany({});
   await Product.insertMany(products);
-  console.log('✅ Database seeded with', products.length, 'products');
+  console.log("Database seeded with", products.length, "products");
+
+  // Create admin if not exists
+  const adminExists = await User.findOne({ email: "admin@doughremi.com" });
+  if (!adminExists) {
+    await User.create({
+      name: "Admin",
+      email: "admin@doughremi.com",
+      password: "admin123",
+      isAdmin: true,
+    });
+    console.log("Admin account created");
+    console.log("   Email:    admin@doughremi.com");
+    console.log("   Password: admin123");
+  } else {
+    console.log("Admin already exists, skipping");
+  }
+
   mongoose.connection.close();
 }
 

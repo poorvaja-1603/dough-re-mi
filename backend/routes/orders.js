@@ -1,12 +1,18 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Order = require('../models/Order');
-const { protect } = require('../middleware/auth');
+const Order = require("../models/Order");
+const { protect, isAdmin } = require("../middleware/auth");
 
 // POST /api/orders - place order
-router.post('/', protect, async (req, res) => {
+router.post("/", protect, async (req, res) => {
   try {
-    const { items, totalAmount, deliveryAddress, paymentMethod, razorpayOrderId } = req.body;
+    const {
+      items,
+      totalAmount,
+      deliveryAddress,
+      paymentMethod,
+      razorpayOrderId,
+    } = req.body;
     const order = await Order.create({
       user: req.user._id,
       items,
@@ -22,11 +28,11 @@ router.post('/', protect, async (req, res) => {
 });
 
 // GET /api/orders/my - get logged in user's orders
-router.get('/my', protect, async (req, res) => {
+router.get("/my", protect, async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user._id })
       .sort({ createdAt: -1 })
-      .populate('items.product', 'name image');
+      .populate("items.product", "name image");
     res.json(orders);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -34,13 +40,13 @@ router.get('/my', protect, async (req, res) => {
 });
 
 // PATCH /api/orders/:id/pay - mark order as paid after razorpay success
-router.patch('/:id/pay', protect, async (req, res) => {
+router.patch("/:id/pay", protect, async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
-    if (!order) return res.status(404).json({ message: 'Order not found' });
-    order.paymentStatus = 'paid';
+    if (!order) return res.status(404).json({ message: "Order not found" });
+    order.paymentStatus = "paid";
     order.razorpayPaymentId = req.body.razorpayPaymentId;
-    order.orderStatus = 'placed';
+    order.orderStatus = "placed";
     await order.save();
     res.json(order);
   } catch (err) {
@@ -49,12 +55,12 @@ router.patch('/:id/pay', protect, async (req, res) => {
 });
 
 // GET /api/orders/all - admin: get all orders
-router.get('/all', async (req, res) => {
+router.get("/all", protect, isAdmin, async (req, res) => {
   try {
     const orders = await Order.find({})
       .sort({ createdAt: -1 })
-      .populate('user', 'name email')
-      .populate('items.product', 'name');
+      .populate("user", "name email")
+      .populate("items.product", "name");
     res.json(orders);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -62,12 +68,12 @@ router.get('/all', async (req, res) => {
 });
 
 // PATCH /api/orders/:id/status - admin: update order status
-router.patch('/:id/status', async (req, res) => {
+router.patch("/:id/status", protect, isAdmin, async (req, res) => {
   try {
     const order = await Order.findByIdAndUpdate(
       req.params.id,
       { orderStatus: req.body.orderStatus },
-      { new: true }
+      { new: true },
     );
     res.json(order);
   } catch (err) {
