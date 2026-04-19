@@ -10,12 +10,11 @@ export default function Navbar() {
     <nav className="navbar">
       {/* Logo */}
       <Link to="/" className="navbar-logo">
-        <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="26" cy="26" r="25" fill="#C9973A" stroke="#3B1F0A" strokeWidth="2"/>
-          <text x="26" y="22" textAnchor="middle" fill="#3B1F0A" fontSize="8" fontWeight="bold" fontFamily="serif">Dough</text>
-          <text x="26" y="32" textAnchor="middle" fill="#3B1F0A" fontSize="8" fontWeight="bold" fontFamily="serif">Re Mi</text>
-          <text x="26" y="40" textAnchor="middle" fill="#3B1F0A" fontSize="6" fontFamily="serif">🎵</text>
-        </svg>
+        <img 
+          src="https://res.cloudinary.com/dqfwkavre/image/upload/v1776585937/dough-re-me-logo_lvs0qk.png" 
+          alt="Dough Re Mi Logo" 
+        />
+        <span>Dough Re Mi</span>
       </Link>
 
       {/* Nav links */}
