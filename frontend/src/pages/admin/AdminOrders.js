@@ -103,7 +103,13 @@ export default function AdminOrders() {
         <div className="admin-stat-card">
           <p className="admin-stat-label">Pending</p>
           <p className="admin-stat-value">
-            {orders.filter((o) => o.orderStatus === "placed").length}
+            {
+              orders.filter(
+                (o) =>
+                  o.orderStatus !== "delivered" &&
+                  o.orderStatus !== "cancelled",
+              ).length
+            }
           </p>
         </div>
       </div>
