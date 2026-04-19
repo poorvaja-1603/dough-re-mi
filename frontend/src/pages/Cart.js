@@ -8,86 +8,86 @@ export default function Cart() {
 
   return (
     <div className="cart-page">
-      {/* Cream header area with logo */}
-      <div className="cart-header-banner">
-        {/* Logo SVG */}
-        <svg width="100" height="80" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="50" cy="40" r="36" fill="#C9973A" stroke="#3B1F0A" strokeWidth="2"/>
-          <text x="50" y="35" textAnchor="middle" fill="#3B1F0A" fontSize="10" fontWeight="bold" fontFamily="serif">Dough</text>
-          <text x="50" y="47" textAnchor="middle" fill="#3B1F0A" fontSize="10" fontWeight="bold" fontFamily="serif">Re Mi</text>
-          <text x="50" y="58" textAnchor="middle" fill="#3B1F0A" fontSize="9" fontFamily="serif">🎵</text>
-        </svg>
-
-        {/* Wavy transition into dark section */}
+      <div className="cart-header">
+        <h1>Your Shopping Cart</h1>
+        <p>{cartCount} {cartCount === 1 ? 'item' : 'items'} ready for checkout</p>
+        
+        {/* Wavy transition */}
         <svg
           viewBox="0 0 480 50"
           xmlns="http://www.w3.org/2000/svg"
-          style={{ display: 'block', width: '100%', marginTop: 8 }}
+          className="cart-wave"
           preserveAspectRatio="none"
         >
           <path
-            d="M0,50 L0,20 Q80,0 160,25 Q240,50 320,20 Q400,0 480,25 L480,50 Z"
-            fill="#3B1F0A"
+            d="M0,50 L0,25 Q20,5 40,25 Q60,45 80,25 Q100,5 120,25 Q140,45 160,25 Q180,5 200,25 Q220,45 240,25 Q260,5 280,25 Q300,45 320,25 Q340,5 360,25 Q380,45 400,25 Q420,5 440,25 Q460,45 480,25 L480,50 Z"
+            fill="var(--cream)"
           />
         </svg>
       </div>
 
-      {/* Dark cart section */}
-      <div className="cart-dark-section" style={{ marginTop: -2 }}>
-        <h2 className="cart-title">Your Cart</h2>
-
+      <div className="cart-container">
         {cart.length === 0 ? (
-          <div className="empty-state" style={{ color: '#f5deb3' }}>
-            <div className="empty-icon">🛒</div>
-            <h3 style={{ color: '#C9973A' }}>Your cart is empty</h3>
-            <p>Add some delicious treats!</p>
-            <button
-              className="btn-primary"
-              style={{ marginTop: 20 }}
-              onClick={() => navigate('/cakes')}
-            >
-              Browse Products
+          <div className="cart-empty">
+            <div className="empty-visual">🛒</div>
+            <h2>Your cart is hungry!</h2>
+            <p>Fill it with our delicious handcrafted treats.</p>
+            <button className="btn-primary" onClick={() => navigate('/cakes')}>
+              Go to Shop
             </button>
           </div>
         ) : (
-          <>
-            {/* Cart items */}
-            {cart.map((item) => (
-              <div key={item._id} className="cart-item-row">
-                <span className="cart-item-name">{item.name}</span>
-                <div className="cart-qty-controls">
-                  <button className="qty-btn" onClick={() => updateQuantity(item._id, item.quantity - 1)}>−</button>
-                  <span className="cart-item-qty">{item.quantity}</span>
-                  <button className="qty-btn" onClick={() => updateQuantity(item._id, item.quantity + 1)}>+</button>
+          <div className="cart-content">
+            <div className="cart-items-list">
+              {cart.map((item) => (
+                <div key={item._id} className="cart-item-card">
+                  <div className="cart-item-img">
+                    <img src={item.image} alt={item.name} />
+                  </div>
+                  <div className="cart-item-details">
+                    <h3>{item.name}</h3>
+                    <p className="item-price-each">₹{item.price} each</p>
+                    <div className="cart-item-actions">
+                      <div className="qty-picker">
+                        <button onClick={() => updateQuantity(item._id, item.quantity - 1)}>−</button>
+                        <span>{item.quantity}</span>
+                        <button onClick={() => updateQuantity(item._id, item.quantity + 1)}>+</button>
+                      </div>
+                      <button className="remove-btn" onClick={() => removeFromCart(item._id)}>
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                  <div className="cart-item-total">
+                    ₹{item.price * item.quantity}
+                  </div>
                 </div>
-                <span className="cart-item-price">{item.price * item.quantity}</span>
-                <button
-                  onClick={() => removeFromCart(item._id)}
-                  style={{ background: 'none', border: 'none', color: '#ff7070', fontSize: '1rem', cursor: 'pointer', marginLeft: 6 }}
-                  title="Remove"
-                >
-                  ✕
-                </button>
+              ))}
+            </div>
+
+            <div className="cart-summary-card">
+              <h3>Order Summary</h3>
+              <div className="summary-row">
+                <span>Subtotal</span>
+                <span>₹{cartTotal}</span>
               </div>
-            ))}
-
-            {/* Total */}
-            <div className="cart-total-row">
-              <span style={{ fontWeight: 800 }}>TOTAL</span>
-              <span style={{ fontWeight: 800 }}>{cartCount}</span>
-              <span style={{ fontWeight: 800 }}>₹{cartTotal}</span>
-            </div>
-
-            {/* Buttons */}
-            <div className="cart-actions">
-              <button className="btn-back" onClick={() => navigate(-1)}>
-                Back
+              <div className="summary-row">
+                <span>Delivery</span>
+                <span className="free-label">FREE</span>
+              </div>
+              <hr />
+              <div className="summary-row total">
+                <span>Total</span>
+                <span>₹{cartTotal}</span>
+              </div>
+              <button className="btn-checkout" onClick={() => navigate('/checkout')}>
+                Proceed to Checkout
               </button>
-              <button className="btn-proceed" onClick={() => navigate('/checkout')}>
-                Proceed
+              <button className="btn-continue" onClick={() => navigate('/cakes')}>
+                Continue Shopping
               </button>
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>

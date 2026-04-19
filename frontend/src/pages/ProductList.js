@@ -2,6 +2,29 @@ import React, { useEffect, useState } from 'react';
 import API from '../api';
 import { useCart } from '../context/CartContext';
 
+// Per-product calorie & allergen data keyed by name
+const PRODUCT_META = {
+  'Strawberry CheeseCake':   { calories: 420, allergens: 'Milk, Eggs, Gluten, Soy' },
+  'Biscoff CheeseCake':      { calories: 460, allergens: 'Milk, Eggs, Gluten, Soy' },
+  'Black Forest Cake':       { calories: 390, allergens: 'Milk, Eggs, Gluten' },
+  'Chocolate Truffle Cake':  { calories: 480, allergens: 'Milk, Eggs, Gluten, Soy' },
+  'Red Velvet Cake':         { calories: 410, allergens: 'Milk, Eggs, Gluten' },
+  'Blueberry Cheesecake':    { calories: 380, allergens: 'Milk, Eggs, Gluten' },
+  'Baguette':                { calories: 180, allergens: 'Gluten' },
+  'ChocoChip Muffin':        { calories: 320, allergens: 'Milk, Eggs, Gluten, Soy' },
+  'Pretzel':                 { calories: 210, allergens: 'Gluten' },
+  'Croissant':               { calories: 290, allergens: 'Milk, Eggs, Gluten' },
+  'Garlic Bread':            { calories: 240, allergens: 'Milk, Gluten' },
+  'Blueberry Muffin':        { calories: 300, allergens: 'Milk, Eggs, Gluten' },
+  'ChocolateChip Cookie':    { calories: 180, allergens: 'Milk, Eggs, Gluten, Soy' },
+  'OatMeal Raisin Cookie':   { calories: 160, allergens: 'Milk, Eggs, Gluten, Oats' },
+  'Peanut Butter Cookie':    { calories: 195, allergens: 'Milk, Eggs, Gluten, Peanuts' },
+  'Sugar Cookies':           { calories: 140, allergens: 'Milk, Eggs, Gluten' },
+  'Double Chocolate Cookie': { calories: 210, allergens: 'Milk, Eggs, Gluten, Soy' },
+  'Macarons Box (6pcs)':     { calories: 390, allergens: 'Milk, Eggs, Tree Nuts' },
+  'Chocolate Brownie':       { calories: 350, allergens: 'Milk, Eggs, Gluten, Soy' },
+};
+
 export default function ProductList({ category, title }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,13 +44,38 @@ export default function ProductList({ category, title }) {
 
   return (
     <div className="product-list-page">
-      {products.map((product) => (
-        <div key={product._id} className="product-card">
-          <img src={product.image} alt={product.name} />
-          <div className="product-info">
-            <h3>{product.name}</h3>
-            <p>{product.description}</p>
-            <div className="product-footer">
+      {products.map((product) => {
+        const meta = PRODUCT_META[product.name] || { calories: '—', allergens: '—' };
+        return (
+          <div key={product._id} className="product-card">
+            {/* Left: image */}
+            <img src={product.image} alt={product.name} />
+
+            {/* Middle: info */}
+            <div className="product-info">
+              <h3>{product.name}</h3>
+              <p className="product-description">{product.description}</p>
+              <div className="product-meta-row">
+                <span className="product-meta-item">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#C9973A" xmlns="http://www.w3.org/2000/svg" style={{verticalAlign:'middle', marginRight:4}}>
+                    <path d="M12 2C12 2 7 8 7 13a5 5 0 0010 0c0-5-5-11-5-11zM9 15a3 3 0 006 0c0-3-3-7-3-7S9 12 9 15z"/>
+                  </svg>
+                  <strong>{meta.calories}</strong> kcal
+                </span>
+                <span className="product-meta-divider">·</span>
+                <span className="product-meta-item">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C9973A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{verticalAlign:'middle', marginRight:4}}>
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                  <strong>Allergens:</strong> {meta.allergens}
+                </span>
+              </div>
+            </div>
+
+            {/* Right: price + CTA */}
+            <div className="product-action">
               <span className="price-badge">₹{product.price}</span>
               <button
                 className={`btn-add-cart ${isInCart(product._id) ? 'added' : ''}`}
@@ -46,8 +94,8 @@ export default function ProductList({ category, title }) {
               </button>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
 
       {products.length === 0 && (
         <div className="empty-state">

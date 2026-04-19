@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import { CartProvider, useCart } from "./context/CartContext";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import ProductList from "./pages/ProductList";
 import AboutUs from "./pages/AboutUs";
@@ -39,60 +40,63 @@ function AppRoutes() {
       <Route
         path="/*"
         element={
-          <>
+          <div className="app-shell">
             <Navbar />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route
-                path="/cakes"
-                element={<ProductList category="cakes" title="Cakes" />}
-              />
-              <Route
-                path="/bakery"
-                element={<ProductList category="bakery" title="Bakery" />}
-              />
-              <Route
-                path="/cookies"
-                element={<ProductList category="cookies" title="Cookies" />}
-              />
-              <Route path="/about-us" element={<AboutUs />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route
-                path="/checkout"
-                element={
-                  <ProtectedRoute>
-                    <Checkout />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/my-account"
-                element={
-                  <ProtectedRoute>
-                    <MyAccount />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/my-orders"
-                element={
-                  <ProtectedRoute>
-                    <MyOrders />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/saved-addresses"
-                element={
-                  <ProtectedRoute>
-                    <SavedAddresses />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-            </Routes>
-          </>
+            <main className="app-main">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route
+                  path="/cakes"
+                  element={<ProductList category="cakes" title="Cakes" />}
+                />
+                <Route
+                  path="/bakery"
+                  element={<ProductList category="bakery" title="Bakery" />}
+                />
+                <Route
+                  path="/cookies"
+                  element={<ProductList category="cookies" title="Cookies" />}
+                />
+                <Route path="/about-us" element={<AboutUs />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route
+                  path="/checkout"
+                  element={
+                    <ProtectedRoute>
+                      <Checkout />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/my-account"
+                  element={
+                    <ProtectedRoute>
+                      <MyAccount />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/my-orders"
+                  element={
+                    <ProtectedRoute>
+                      <MyOrders />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/saved-addresses"
+                  element={
+                    <ProtectedRoute>
+                      <SavedAddresses />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
         }
       />
 
