@@ -1,12 +1,12 @@
-import axios from 'axios';
+import axios from "axios";
 
 const API = axios.create({
-  baseURL: '/api',
+  baseURL: process.env.REACT_APP_API_URL || "/api",
 });
 
 // Attach JWT token to every request if present
 API.interceptors.request.use((config) => {
-  const user = JSON.parse(localStorage.getItem('drm_user') || 'null');
+  const user = JSON.parse(localStorage.getItem("drm_user") || "null");
   if (user?.token) {
     config.headers.Authorization = `Bearer ${user.token}`;
   }
